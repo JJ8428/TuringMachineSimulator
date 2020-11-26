@@ -14,20 +14,21 @@ def unique_states(states):
                 break
     return good_format
 
-# TODO: What if you need to refer to blanks preappended to the string and not enough blanks exist?
-
-
-def buffer(tape, direction):
+def buffer(tape, direction, blank):
     ''' Adds blanks in the tape if necessary '''
-    # tape is the string we are to prepend/append a blank to
-    # direction (L/R) will tell if the tape needs to be preappened/appened to
-    return 1
+    if direction == 'L':
+        return blank + tape
+    # elif direction == 'R':
+    return tape + blank
 
 def find_state(states, uniq_id):
     ''' Find the State in states with a particular uniq_id '''
+    ret = None
     for a in range(0, states.__len__()):
         if states[a].uniq_id == uniq_id:
-            return states[a]
+            ret = states[a]
+            break
+    return ret
 
 class TM:
     ''' Object that correesponds to the turing machine '''
@@ -38,8 +39,7 @@ class TM:
         # sigma[0] is the character that signifies blank (Provided TM text files use 'b' as blank)
         self.states = [] # List of all States in the TM
         self.current_state = None
-        self.tape = None # Original tape (helps when debugging)
-        self.current_tape = None # Tape that TM shows each step will processing
+        self.tape = None # Tape that TM shows each step will processing
         self.step = -1 # Count for number of steps
         self.head_index = 0 # Index of the head
         self.desc = None # Description of what TM should do (optional)
@@ -74,54 +74,66 @@ class TM:
         self.states = states
         for a in range(0, start_bools):
             if start_bools[a]:
-                self.current_state = states[a] # self.current_state set start state
+                self.current_state = states[a] # self.current_state is set to start state
+                break
         self.tape = tape
-        self.current_tape = tape
         self.step = 0
         self.head_index = 0 # Head is placed on left most character
         self.desc = desc
 
-    def check_strays(self):
-        ''' Return boolean if any stray states (states that cannot be transitioned into) '''
+    '''
+    def partial_sane(self):
+        # Return boolean if any states cannot be reached
+        # Yes, I have to check final and start state, but I don't really care about those
+        # This only serves as a warning for such states
+        # Additionally, this method mainly used for debugging purposes
         reachable = []
         for a in range(0, self.states.__len__()):
-            reachable.append(self.states[a].uniq_id)
+            if not self.states[a].is_start:
+                reachable.append(self.states[a].uniq_id)
         for a in range(0, self.states.__len__()):
             for b in range(0, self.states[a].transitions.__len__()):
                 if (reachable.__contains__(self.states[a].transitions[b][-1])
-                    and self.states[a].is_start == False):
+                        and not self.states[a].is_start):
                     reachable.remove(self.states[a].transitions[b][-1])
         return reachable.__len__() == 0
+    '''
 
     def process(self):
         ''' TM will process the string '''
-        toPrint = 'Sigma: ' + str(self.sigma) + ' | Blank Char: ' + self.sigma[0] + '\n'
-        toPrint += 'Input: ' + self.tape + ' | TM Desc: ' + self.desc + '\n\n'
-        toPrint += 'Unique_ID, Start State, Halt Accept State, Halt Reject State, Transitions:\n'
+        ret = 'SIGMA: ' + str(self.sigma) + ' | BLANK CHAR: ' + self.sigma[0] + '\n'
+        ret += 'INPUT: ' + self.tape + ' | TM DESC: ' + self.desc + '\n\n'
+        ret += 'UNIQUE_ID, START STATE, FINAL/HALT STATE, TRANSITION(S):\n'
         for a in range(0, self.states.__len__()):
-            toPrint += self.states[a].__str__() + '\n'
-        toPrint += '\n'
+            ret += self.states[a].__str__() + '\n'
+        ret += '\n'
         while True:
-            if self.current_state.is_final_accept or self.current_state.is_final_reject:
-                break # Halt, since the TM has reached a final state that either accepts/rejects
-            toPrint += ''
-            list_tape = list(self.current_tape)
+            self.step += 1
+            ret += 'STEP:    ' + str(self.step) + ' | ' + 'STATE: ' + self.current_state.uniq_id()
+            ret += 'POS:     '
+            for a in range(0, self.head_index):
+                ret += '  '
+            ret += '*\nTAPE:    '
+            for a in range(0, self.tape.__len__()):
+                ret += self.tape[a] + ' '
+            ret += '\n\n'
+            list_tape = list(self.tape)
+            if ['accept', 'reject'].__contains__(self.current_state.is_final):
+                break # Halt, TM has reached a final state that either accepts/rejects
             to_read = list_tape[self.head_index]
-            transition_info = self.current_state.read(to_read) # List in this format: [Write(Sigma), Shift(L/R), State(uniq_id)]
-            list_tape[self.head_index] = transition_info[0] # Write the new character the state needs us to write
-            if transition_info[1] == 'L':
+            trans_info = self.current_state.read(to_read) # Format: [Write, Shift(L/R), State ID]
+            list_tape = list(self.tape)
+            list_tape[self.head_index] = trans_info[0] # Write new character State requires
+            if trans_info[1] == 'L':
                 self.head_index -= 1
             else: # shift == 'R':
                 self.head_index += 1
-            # TODO buffer()
-            self.current_tape = "".join(list_tape)
-            self.current_state = find_state(self.states, transition_info[2])
-            self.step += 1
-            toPrint += ''
-        if self.current_state.is_final_accept:
-            toPrint += 'accepted woo hoo'
-        else: # self.current_state.is_final_reject: 
-            toPrint += 'rejected boo hoo'
-        
-        
-
+            if self.head_index == -1:
+                self.tape = buffer(self.tape, 'L', self.sigma[0])
+            elif self.head_index == self.tape.__len__():
+                self.tape = buffer(self.tape, 'R', self.sigma[0])
+            # Update the variables in the TM
+            self.tape = "".join(list_tape)
+            self.current_state = find_state(self.states, trans_info[2])
+        ret += 'FINAL STATE REACHED | STRING IS ' + self.current_state.is_final.upper() + '\n\n'
+        return ret
