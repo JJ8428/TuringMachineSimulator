@@ -19,21 +19,21 @@ def argp():
     # Check if paths are valid files
     error = False
     try:
-        r = open(args.build, 'r')
-        r.close()
-    except Exception:
+        r_tmp = open(args.build, 'r')
+        r_tmp.close()
+    except FileNotFoundError:
         print('Error: Build file cannot be found. Please check if the path is valid.\n')
         error = True
     try:
-        r = open(args.input, 'r')
-        r.close()
-    except Exception:
-        print('Error: Build file cannot be found. Please check if the path is valid.\n')   
+        r_tmp = open(args.input, 'r')
+        r_tmp.close()
+    except FileNotFoundError:
+        print('Error: Build file cannot be found. Please check if the path is valid.\n')
         error = True
     try:
-        r = open(args.output, 'r')
-        r.close()
-    except Exception:
+        r_tmp = open(args.output, 'r')
+        r_tmp.close()
+    except FileNotFoundError:
         print('Error: Build file cannot be found. Please check if the path is valid.\n')
         error = True
     if error:

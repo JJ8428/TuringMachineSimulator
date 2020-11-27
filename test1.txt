@@ -1,0 +1,6 @@
+sigma = [b, 0, 1, X]
+desc = Testing TM. Does tape have atleast one instance of 1?
+state_ids = [q0, q1, q2]
+q0, 1, not, b|b|R|q2, 0|0|R|q0, 1|1|R|q1
+q1, 0, accept
+q2, 0, reject

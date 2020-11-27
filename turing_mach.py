@@ -38,7 +38,7 @@ class TM:
         self.sigma = [] # Sigma is list of characters that are used as the TM's alphabet
         # sigma[0] is the character that signifies blank (Provided TM text files use 'b' as blank)
         self.states = [] # List of all States in the TM
-        self.current_state = None
+        self.current_state = None # The current State the TM is on
         self.tape = None # Tape that TM shows each step will processing
         self.step = -1 # Count for number of steps
         self.head_index = 0 # Index of the head
@@ -57,7 +57,7 @@ class TM:
             for a in range(0, states.__len__()):
                 # Check types in list of transitions
                 if isinstance(states[a], State):
-                    start_bools.append(states[a].is_start())
+                    start_bools.append(states[a].is_start)
                 else:
                     ill_format = True
                     break
@@ -65,19 +65,19 @@ class TM:
         if not ill_format and start_bools.count(True) != 1:
             ill_format = True
         # All States within self.states must have a unique uniq_id value.
-        if not (ill_format and unique_states(states)):
+        if not (ill_format or unique_states(states)):
             ill_format = True
         if ill_format:
-            print('Error: TM isntance unable to initialize due to ill formatted variables')
+            print('Error: TM instance unable to initialize due to ill formatted variables')
             sys.exit()
         self.sigma = sigma
         self.states = states
-        for a in range(0, start_bools):
+        for a in range(0, start_bools.__len__()):
             if start_bools[a]:
                 self.current_state = states[a] # self.current_state is set to start state
                 break
         self.tape = tape
-        self.step = 0
+        self.step = -1
         self.head_index = 0 # Head is placed on left most character
         self.desc = desc
 
@@ -101,39 +101,55 @@ class TM:
 
     def process(self):
         ''' TM will process the string '''
-        ret = 'SIGMA: ' + str(self.sigma) + ' | BLANK CHAR: ' + self.sigma[0] + '\n'
-        ret += 'INPUT: ' + self.tape + ' | TM DESC: ' + self.desc + '\n\n'
+        if self.tape == 'yet to load':
+            print('Error: Tape is not loaded in TM instance.')
+            sys.exit()
+        # Set text to have parameters shown
+        ret = 'SIGMA: '
+        for a in range(0, self.sigma.__len__()):
+            ret += self.sigma[a] + ' ' 
+        ret += '| BLANK CHAR: ' + self.sigma[0] + '\n'
+        ret += 'INPUT: ' + self.tape + ' | TM DESC: ' + self.desc + '\n'
         ret += 'UNIQUE_ID, START STATE, FINAL/HALT STATE, TRANSITION(S):\n'
         for a in range(0, self.states.__len__()):
-            ret += self.states[a].__str__() + '\n'
+            ret += self.states[a].__str__()
         ret += '\n'
         while True:
             self.step += 1
-            ret += 'STEP:    ' + str(self.step) + ' | ' + 'STATE: ' + self.current_state.uniq_id()
-            ret += 'POS:     '
+            list_tape = list(self.tape)
+            # Have text built to show process
+            ret += 'STEP:    ' + str(self.step) + ' | ' + 'STATE: '  + self.current_state.uniq_id
+            ret += '\nPOS:     '
             for a in range(0, self.head_index):
                 ret += '  '
             ret += '*\nTAPE:    '
             for a in range(0, self.tape.__len__()):
                 ret += self.tape[a] + ' '
             ret += '\n\n'
-            list_tape = list(self.tape)
             if ['accept', 'reject'].__contains__(self.current_state.is_final):
                 break # Halt, TM has reached a final state that either accepts/rejects
             to_read = list_tape[self.head_index]
             trans_info = self.current_state.read(to_read) # Format: [Write, Shift(L/R), State ID]
-            list_tape = list(self.tape)
             list_tape[self.head_index] = trans_info[0] # Write new character State requires
+            # Update the head_index
             if trans_info[1] == 'L':
                 self.head_index -= 1
-            else: # shift == 'R':
+            elif trans_info[1] == 'R': # shift == 'R':
                 self.head_index += 1
-            if self.head_index == -1:
-                self.tape = buffer(self.tape, 'L', self.sigma[0])
-            elif self.head_index == self.tape.__len__():
-                self.tape = buffer(self.tape, 'R', self.sigma[0])
             # Update the variables in the TM
             self.tape = "".join(list_tape)
+            # Buffer the tape is necessary
+            if self.head_index == -1:
+                self.tape = buffer(self.tape, 'L', self.sigma[0])
+                self.head_index = 0
+            elif self.head_index == self.tape.__len__():
+                self.tape = buffer(self.tape, 'R', self.sigma[0])
             self.current_state = find_state(self.states, trans_info[2])
-        ret += 'FINAL STATE REACHED | STRING IS ' + self.current_state.is_final.upper() + '\n\n'
+        ret += 'FINAL STATE REACHED | STRING IS ' + self.current_state.is_final.upper() + 'ED\n'
         return ret
+
+    '''
+    def load_tape(self, tape):
+        # Put the tape in self.tape 
+        self.tape = tape
+    '''

@@ -32,12 +32,13 @@ class State:
                 # Check types in list of transitions
                 if not(transitions[a].__len__() == 4 or isinstance(transitions[-1], int)):
                     ill_format = True
+                    print('bb')
                     break
-            if not [None, 'accept', 'reject'].__contains__(final):
+            if not ['not', 'accept', 'reject'].__contains__(final):
                 ill_format = True
         # Error statement such that State characteristics are incorrect
         if ill_format:
-            print('Error: State instance unable to initalize due to ill formatted variables')
+            print('State Error: State instance unable to initalize due to ill formatted variables')
             sys.exit()
         self.uniq_id = state_id
         self.is_start = start
@@ -46,7 +47,7 @@ class State:
         # As soon as a final state is entered, the TM will halt
         if ['accept', 'reject'].__contains__(self.is_final):
             if transitions != []:
-                print('Warning: Transitions on final/halt states are detected but will be ignored')
+                print('State Warning: Transitions on final/halt states are detected but will be ignored')
             self.transitions = []
         else:
             self.transitions = transitions
@@ -67,9 +68,9 @@ class State:
     def __str__(self):
         ''' String of State to print '''
         ret = (self.uniq_id + ', ' +
-               self.is_start + ', ' +
+               str(self.is_start) + ', ' +
                self.is_final.upper())
-        for a in range(0, self.transitions):
+        for a in range(0, self.transitions.__len__()):
             ret += (', (' + self.transitions[a][0] +
                     '|' + self.transitions[a][1] +
                     '|' + self.transitions[a][2] +
