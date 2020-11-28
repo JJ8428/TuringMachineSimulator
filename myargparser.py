@@ -12,7 +12,7 @@ def argp():
     parser.add_argument('-b', '--build', type=str, metavar='', required=True,
                         help='Path of file containing Turing Machine build')
     parser.add_argument('-i', '--input', type=str, metavar='', required=True,
-                        help='Path of file containing strings to process')
+                        help='String to process')
     parser.add_argument('-o', '--output', type=str, metavar='', required=True,
                         help='Path of file to write processed strings into')
     args = parser.parse_args()
@@ -28,13 +28,7 @@ def argp():
         r_tmp = open(args.input, 'r')
         r_tmp.close()
     except FileNotFoundError:
-        print('Error: Build file cannot be found. Please check if the path is valid.\n')
-        error = True
-    try:
-        r_tmp = open(args.output, 'r')
-        r_tmp.close()
-    except FileNotFoundError:
-        print('Error: Build file cannot be found. Please check if the path is valid.\n')
+        print('Error: Input file cannot be found. Please check if the path is valid.\n')
         error = True
     if error:
         sys.exit()

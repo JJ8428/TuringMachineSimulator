@@ -18,27 +18,32 @@ class State:
         # transitions are 2-D list with format: [ [Read, Write, Shift(L/R), State ID] ]
         self.transitions = []
 
-    def create(self, state_id, start, final, transitions):
+    def create(self, state_id, start, final, transitions=[]):
         ''' Custom Constructor '''
+        # pylint: disable=invalid-name
         # Error checking occurs to ensure vars are proper types and correctly
         ill_format = False
+        error = ''
         if not (isinstance(state_id, str)
                 or isinstance(transitions, list)
                 or isinstance(start, bool)
                 or isinstance(final, str)):
             ill_format = True
+            error += 'self (State) .create() has input of wrong type(s).\n'
         if not ill_format:
             for a in range(0, transitions.__len__()):
                 # Check types in list of transitions
-                if not(transitions[a].__len__() == 4 or isinstance(transitions[-1], int)):
+                if not(transitions[a].__len__() == 4):
                     ill_format = True
-                    print('bb')
+                    print(transitions[a])
                     break
             if not ['not', 'accept', 'reject'].__contains__(final):
                 ill_format = True
+                error += 'Unable to determine if state is halting accept/reject or neither.\n'
         # Error statement such that State characteristics are incorrect
         if ill_format:
             print('State Error: State instance unable to initalize due to ill formatted variables')
+            print('\n' + error)
             sys.exit()
         self.uniq_id = state_id
         self.is_start = start
@@ -47,13 +52,14 @@ class State:
         # As soon as a final state is entered, the TM will halt
         if ['accept', 'reject'].__contains__(self.is_final):
             if transitions != []:
-                print('State Warning: Transitions on final/halt states are detected but will be ignored')
+                print('State Warning: Transitions on final/halt states serve no function')
             self.transitions = []
         else:
             self.transitions = transitions
 
     def read(self, to_read):
         ''' Return information as what State does on reading input 'to_read' '''
+        # pylint: disable=invalid-name
         index = -1
         for a in range(0, self.transitions.__len__()):
             if self.transitions[a][0] == to_read:
@@ -62,18 +68,20 @@ class State:
         # Error statement such that current State has no transition for input 'read'
         if index == -1:
             print('Error: State instance did not have transition encoded for input')
+            print('\n' + 'TM failed on this state: ' + self.__str__())
             sys.exit()
         return self.transitions[index][1:] # Return list in this format: [Write, Shift(L/R), State]
 
     def __str__(self):
         ''' String of State to print '''
+        # pylint: disable=invalid-name
         ret = (self.uniq_id + ', ' +
                str(self.is_start) + ', ' +
                self.is_final.upper())
         for a in range(0, self.transitions.__len__()):
-            ret += (', (' + self.transitions[a][0] +
+            ret += (', ' + self.transitions[a][0] +
                     '|' + self.transitions[a][1] +
                     '|' + self.transitions[a][2] +
-                    '|' + self.transitions[a][3] + ')')
+                    '|' + self.transitions[a][3])
         ret += '\n'
         return ret

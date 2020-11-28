@@ -1,0 +1,8 @@
+sigma = [b, 0, 1]
+desc = TM simulation of Increment assuming input is backwards. (Left to Right)
+state_ids = [q0, q1, q2, q3, qA]
+q0, 1, not, b|b|R|q0, 0|1|R|q2, 1|0|R|q1
+q1, 0, not, b|1|R|q2, 0|1|R|q2, 1|0|R|q1
+q2, 0, not, b|b|L|q3, 0|0|L|q3, 1|1|L|q3
+q3, 0, not, b|b|R|qA, 0|0|L|q3, 1|1|L|q3
+qA, 0, accept
