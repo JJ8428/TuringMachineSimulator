@@ -1,0 +1,14 @@
+qSTART 0 q1 b RIGHT
+qSTART b qFINAL b RIGHT
+
+q1 0 q2 b RIGHT
+
+q2 b q3 b LEFT
+q2 0 q2 0 RIGHT
+q2 1 q2 1 RIGHT
+
+q3 1 q4 b LEFT
+
+q4 b qSTART b RIGHT
+q4 0 q4 0 LEFT
+q4 1 q4 1 LEFT

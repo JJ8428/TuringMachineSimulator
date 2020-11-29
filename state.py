@@ -6,28 +6,26 @@ class State:
 
     def __init__(self):
         ''' Basic Constructor '''
-        # Every State in a TM has a unique ID
-        # States will indicate what State to tranition by giving uniq_id of the State to transfer to
-        # self.uniq_id has type of str so TM's can be parsed from files of a specific syntax
-        # Allows for easy naming convention
+        # State unique str id
+        # If the uniq_id has str of final in it any way, it accepts it 
         self.uniq_id = None
-        # Booleans if State is a start state or final State
-        self.is_start = False
-        # String if 'accept', 'reject' final State or 'none' if not Final State
-        self.is_final = None
+        # Booleans if State is a start state or halt State
+        self.is_start = None 
+        self.is_halt = None
         # transitions are 2-D list with format: [ [Read, Write, Shift(L/R), State ID] ]
         self.transitions = []
 
-    def create(self, state_id, start, final, transitions=[]):
+    def create(self, state_id, start, halt, transitions=[]):
         ''' Custom Constructor '''
         # pylint: disable=invalid-name
         # Error checking occurs to ensure vars are proper types and correctly
         ill_format = False
         error = ''
+        # Check type of variables
         if not (isinstance(state_id, str)
                 or isinstance(transitions, list)
                 or isinstance(start, bool)
-                or isinstance(final, str)):
+                or isinstance(halt, bool)):
             ill_format = True
             error += 'self (State) .create() has input of wrong type(s).\n'
         if not ill_format:
@@ -35,27 +33,18 @@ class State:
                 # Check types in list of transitions
                 if not(transitions[a].__len__() == 4):
                     ill_format = True
-                    print(transitions[a])
+                    error += 'Transitions are not recognized'
+                    error += '\nPoint of error: ' + transitions
                     break
-            if not ['not', 'accept', 'reject'].__contains__(final):
-                ill_format = True
-                error += 'Unable to determine if state is halting accept/reject or neither.\n'
-        # Error statement such that State characteristics are incorrect
+        # Error statement if issues arise above
         if ill_format:
             print('State Error: State instance unable to initalize due to ill formatted variables')
             print('\n' + error)
             sys.exit()
         self.uniq_id = state_id
         self.is_start = start
-        self.is_final = final
-        # Final states should not have any transitions
-        # As soon as a final state is entered, the TM will halt
-        if ['accept', 'reject'].__contains__(self.is_final):
-            if transitions != []:
-                print('State Warning: Transitions on final/halt states serve no function')
-            self.transitions = []
-        else:
-            self.transitions = transitions
+        self.is_halt = halt
+        self.transitions = transitions
 
     def read(self, to_read):
         ''' Return information as what State does on reading input 'to_read' '''
@@ -67,9 +56,7 @@ class State:
                 break
         # Error statement such that current State has no transition for input 'read'
         if index == -1:
-            print('Error: State instance did not have transition encoded for input')
-            print('\n' + 'TM failed on this state: ' + self.__str__())
-            sys.exit()
+            return None # TM will halt and reject
         return self.transitions[index][1:] # Return list in this format: [Write, Shift(L/R), State]
 
     def __str__(self):
@@ -77,7 +64,7 @@ class State:
         # pylint: disable=invalid-name
         ret = (self.uniq_id + ', ' +
                str(self.is_start) + ', ' +
-               self.is_final.upper())
+               str(self.is_halt))
         for a in range(0, self.transitions.__len__()):
             ret += (', ' + self.transitions[a][0] +
                     '|' + self.transitions[a][1] +

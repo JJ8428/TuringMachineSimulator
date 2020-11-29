@@ -1,78 +1,84 @@
 ''' Builds the TM obj from the file '''
 # Remember, we have to load the tape(s) manually
 
-import sys
-# import re
+import re
 from state import State
 from turing_mach import TM
 
-# This is a method that reads from a different format of input files
-def assemble2(buildpath):
-    # Constructs the TM with State obj TM instance
+def assemble(buildpath):
+    ''' Constructs the TM with State obj TM instance '''
     # pylint: disable=invalid-name
     read = open(buildpath, 'r')
-    # Format: sigma = [..., ..., ...]
-    sigma = read.readline().strip()
-    sigma = sigma.replace(' ', '')
-    sigma = sigma.replace('sigma', '')
-    sigma = sigma.replace('=', '')
-    sigma = sigma.replace('[', '')
-    sigma = sigma.replace(']', '')
-    sigma = sigma.split(',')
-    # Format: desc = ...
-    desc = read.readline().replace('desc', '')
-    desc = desc.replace('=', '')
-    desc = desc.replace('\n', '')
-    # Format: state_ids = [..., ..., ...]
-    state_ids = read.readline().strip()
-    state_ids = state_ids.replace(' ', '')
-    state_ids = state_ids.replace('state_ids', '')
-    state_ids = state_ids.replace('=', '')
-    state_ids = state_ids.replace('[', '')
-    state_ids = state_ids.replace(']', '')
-    state_ids = state_ids.split(',')
-    read = open(buildpath, 'r')
-    states = []
-    line_count = 0
+    build = ''
     for line in read.readlines():
-        if line_count < 3: # Previous 2 lines already read for sigma and desc parameters
-            line_count += 1
-            continue
-        line = line.strip()
-        line = line.replace(' ', '')
-        line = line.split(',')
-        state_id = line[0]
-        if not [0, 1].__contains__(int(line[1])):
-            print('Assemble Error: Build path should have start states only determined as 0 or 1.')
-            sys.exit()
-        try:
-            start = bool(int(line[1]))
-        except ValueError:
-            print('Build Error: Transitions in build path are ill format')
-            sys.exit()
-        final = line[2]
-        transitions = []
-        for a in range(3, line.__len__()):
-            tmp = line[a].split('|')
-            # Checks if transitions are encoded correctly
-            if (tmp.__len__() != 4):
-                print('Build Error: Transitions in build path are ill format')
-                print('\nParsing occured on the following line: ' + line[a])
-                sys.exit()
-            if (not sigma.__contains__(tmp[0])
-                    or not sigma.__contains__(tmp[1])
-                    or not ['L', 'R'].__contains__(tmp[2])
-                    or not state_ids.__contains__(tmp[3])):
-                print('Build Error: Transitions in build path are ill format')
-                print('\nParsing occured on the following line: ' + line[a])
-                sys.exit()
-            transitions.append(tmp)
-        # Build the states
-        state = State()
-        state.create(state_id, start, final, transitions)
-        states.append(state)
+        build += re.sub(' +', ' ', line).replace('\n ', '\n').replace(' \n', '\n')
     read.close()
-    # tape will be loaded in the main script
+    if build[-1] == '\n':
+        build = build[:-1]
+    build = build.split('\n\n')
+    for a in range(0, build.__len__()):
+        build[a] = build[a].split('\n')
+        for b in range(0, build[a].__len__()):
+            if build[a][b] == ['']:
+                build[a].remove([''])
+            else:
+                build[a][b] = build[a][b].split(' ')
+    # Get sigma and state_ids
+    sigma = ['b']
+    state_ids = []
+    for a in range(0, build.__len__()):
+        for b in range(0, build[a].__len__()):
+            if not sigma.__contains__(build[a][b][1]):
+                sigma.append(build[a][b][1])
+            if not sigma.__contains__(build[a][b][3]):
+                sigma.append(build[a][b][3])
+            if not state_ids.__contains__(build[a][b][0]):
+                state_ids.append(build[a][b][0])
+            if not state_ids.__contains__(build[a][b][2]):
+                state_ids.append(build[a][b][2])
+    # Get desc
+    desc = buildpath
+    '''
+        Assumption I made:
+        Start states are always the first
+        Final states are states that have no transitions encoded
+    '''
+    states = []
+    for a in range(0, build.__len__()):
+        state = State()
+        transitions = []
+        uniq_id = build[a][0][0]
+        '''
+        # Assume start state is the first state mentioned
+        if a == 0:
+            start = 1
+        else:
+            start = 0
+        '''
+        # Assume the start state has a uniq_id with str of start in it
+        if uniq_id.upper().__contains__('START'):
+            start = 1
+        else:
+            start = 0
+        for b in range(0, build[a].__len__()):
+            transitions.append([build[a][b][1],
+                                build[a][b][3],
+                                str(build[a][b][4])[0],
+                                build[a][b][2]])
+        state.create(uniq_id, start, 0, transitions)
+        states.append(state)
+    built = [] # States we have built (not halt states)
+    for state in states:
+        built.append(state.uniq_id)
+    remaining = [] # States to build (halt states)
+    for a in range(0, state_ids.__len__()):
+        if not built.__contains__(state_ids[a]):
+            remaining.append(state_ids[a])
+    # Create the final states
+    for halt_state in remaining:
+        state = State()
+        state.create(halt_state, 0, 1)
+        states.append(state)
     to_ret = TM()
     to_ret.create(sigma, states, desc)
     return to_ret

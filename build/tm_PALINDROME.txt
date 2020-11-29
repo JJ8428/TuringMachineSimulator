@@ -1,0 +1,35 @@
+qSTART b qA b RIGHT
+qSTART 0 q4 b RIGHT
+qSTART 1 q1 b RIGHT
+
+q1 0 q1 0 RIGHT
+q1 1 q1 1 RIGHT
+q1 b q2 b LEFT
+
+q2 1 q3 b LEFT
+
+q3 b q7 b RIGHT
+q3 0 q3 0 LEFT
+q3 1 q3 1 LEFT
+
+q4 0 q4 0 RIGHT
+q4 1 q4 1 RIGHT
+q4 b q5 b LEFT
+
+q5 0 q6 b LEFT
+
+q6 b q7 b RIGHT
+q6 0 q6 0 LEFT
+q6 1 q6 1 LEFT
+
+q7 b qFINAL b LEFT
+q7 0 q8 0 RIGHT
+q7 1 q8 1 RIGHT
+
+q8 b qFINAL b LEFT
+q8 0 q9 0 LEFT
+q8 1 q9 1 LEFT
+
+q9 b qSTART b RIGHT
+q9 0 q9 0 LEFT
+q9 1 q9 1 LEFT
