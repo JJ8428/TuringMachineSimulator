@@ -47,13 +47,11 @@ Files are to be formatted akin to this example:
   input symbol that is read. The next three columns are the new state,
   the symbol to be written, and the motion of the tape head.
 
-<b>THIS IS DIRECT COPY AND PASTE FROM THE PROJECT PDF.</b> The breaks in the quotes should be empty lines that only serve as a divider.
+<b>THIS IS DIRECT COPY AND PASTE FROM THE PROJECT PDF.</b> The breaks in the quotes should be empty new lines that only serve as a divider.
 
 Please note the states are divided into chunks based on the first column. The start state of a TM will always be the state that has the substring START in its name (not case sensitive). So in this case, the start state is SHIFTSTART since it has START in the state's name. 
 
 Halt states are states that have zero transitions. Look at the last line of the file. SHIFTCOPY on reading b goes to SHIFTFINAL. Okay, but SHIFTFINAL has no transitions, so SHIFTFINAL is created as a halt state, a state with no transitions mapped. How does the TM decide if it reaches a halt state to accept/reject the string? Again this lies in the state name. Halt states with the substring FINAL in its state name will accept the string (not case sensitive). If the halt state does not have FINAL in its name, it rejects. This is very useful for creating trap states to force a rejection. 
-
-The halt states in the TM will be states that have no transitions. So in this case, 
 
 ## How to run:
 
@@ -69,15 +67,21 @@ python3 main.py -b $1 -i $2
 Here are 2 examples of commandlines the user can use. This section is to help clear any doubts in how to run the pyscripts.
 
 Suppose the user has the string 'b0001110111000'. The user wants to figure out if the string is a palindrome. The first thing is to check if there exists a transition table that identifies if a string is a palindrome. Yes, we have one called: tm_PALINDROME.txt. All that is to do is to enter the command line. Note that the input string 'b0001110111000' has a blank (b) as its first character. If the input did not have the blank, the program will automatically add it.
+
 ```python
 python3 main.py -b tm_PALINDROME.txt -i b0001110111000
 ```
+
 Running this will print every state (and transitions of the state) the TM has, each step the TM took, whether the input is accepted/rejected, and how the input(tape) looks after being processed by the TM in the console text. The example above will be accepted since the input is indeed a palindrome.
 
-Suppose the user wants to complement the string '000111000111'. The first thing is to check if there exists a transition table that complements a string of 0's and 1's. Yes, we have one called tm_COMPLEMENT.txt. All that is to do is to enter the command line. Remember, since the input string does not begin with a blank (b) as its first character, the program will warn the user that the text has no blank (b) as its first character and automically will prepend one. 
+Suppose the user wants to complement the string '000111000111'. The first thing is to check if there exists a transition table that complements a string of 0's and 1's. Yes, we have one called tm_COMPLEMENT.txt. All that is to do is to enter the command line. Remember, since the input string does not begin with a blank (b) as its first character, the program will warn the user that the text has no blank (b) as its first character and automically will prepend a blank to the input.
+
 ```python 
 python3 main.py -b tm_COMPLEMENT.txt -i 000111000111
 ```
+
 This example will accept the string regardless (There is nothing to reject unless there are characters other than b 0 or 1) and yield the processed string 111000111000 with blanks either appended for prepended to it.
 
+## Pylint Complaints
 
+All files score above 9.5. The main issue that each file deals with is the variable names in for loops and block comments in function to explain local variables. I have added the comment # pylint: disable=invalid-name and # pylint: disable=pointless-string-statement to address these issues.
