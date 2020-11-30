@@ -23,8 +23,7 @@ def parser():
         print('Error: Build file cannot be found. Please check if the path is valid.\n')
         sys.exit()
     if args.input[0] != 'b':
-        print('Error: Input first character must be blank (b). Head will start at index of 1.')
-        sys.exit()
+        print('Warning: Tape to process did not have a blank (b) as its first character. Blank will be prepended automatically.')
     if error:
         sys.exit()
     return args

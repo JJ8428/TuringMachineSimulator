@@ -161,6 +161,9 @@ class TM:
     def load_tape(self, tape):
         ''' Reset the TM obj and load tape '''
         # Allows for TM to be used repeatedly
-        self.tape = tape
+        if tape[0] != 'b':
+            self.tape = 'b' + tape
+        else:
+            self.tape = tape
         self.step = -1
         self.head_index = 1
