@@ -28,19 +28,19 @@ Files are to be formatted akin to this example:
   ><p>SHIFTSTART 0 SHIFTSTART 0 RIGHT</p>
   ><p>SHIFTSTART 1 SHIFTSTART 1 RIGHT</p>
   ><p>SHIFTSTART b SHIFTCOPYA b LEFT</p>
-  <br>
+  
   ><p>SHIFTCOPYA 0 SHIFTCOPYZERO X RIGHT</p>
   ><p>SHIFTCOPYA 1 SHIFTCOPYONE X RIGHT</p>
   ><p>SHIFTCOPYA X SHIFTCOPYA b LEFT</p>
   ><p>SHIFTCOPYA Y SHIFTCOPYB Y RIGHT</p>
   ><p>SHIFTCOPYA b SHIFTCOPYB b RIGHT</p>
-  <br>
+  
   ><p>SHIFTCOPYZERO b SHIFTCOPYA 0 LEFT</p>
   ><p>SHIFTCOPYZERO Y SHIFTFINAL Y RIGHT</p>
-  <br>
+  
   ><p>SHIFTCOPYONE b SHIFTCOPYA 1 LEFT</p>
   ><p>SHIFTCOPYONE Y SHIFTFINAL Y RIGHT
-  <br>
+  
   ><p>SHIFTCOPYB b SHIFTFINAL Y RIGHT</p>
 
   The first column is the current state, and the second column is the
