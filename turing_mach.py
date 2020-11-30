@@ -66,7 +66,7 @@ class TM:
                 else:
                     # This error only occurs for a poorly designed __main__
                     ill_format = True
-                    error += 'States did not load correctly. This is due to poor handling in __main__.\n'
+                    error += 'States did not load correctly. Poor handling in main.py.\n'
                     break
         # All States within self.states must have a unique uniq_id value.
         if not (ill_format or unique_states(states)):
@@ -105,7 +105,7 @@ class TM:
     def process(self):
         ''' TM will process the string '''
         # pylint: disable=invalid-name
-        if self.tape == None:
+        if self.tape is None:
             print('Error: Tape is not loaded in TM instance.')
             sys.exit()
         # Set text to have parameters shown
@@ -133,7 +133,7 @@ class TM:
             ret += '\n\n'
             to_read = list_tape[self.head_index]
             trans_info = self.current_state.read(to_read) # Format: [Write, Shift(L/R), State ID]
-            if trans_info == None: # TM did not have transition for input at that state, so we halt
+            if trans_info is None: # TM did not have transition for input at that state, so we halt
                 if self.current_state.uniq_id.upper().__contains__('FINAL'):
                     accepted = 'accepted'
                 else:
