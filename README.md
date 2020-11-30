@@ -28,26 +28,26 @@ Files are to be formatted akin to this example:
   ><p>SHIFTSTART 0 SHIFTSTART 0 RIGHT</p>
   ><p>SHIFTSTART 1 SHIFTSTART 1 RIGHT</p>
   ><p>SHIFTSTART b SHIFTCOPYA b LEFT</p>
-  
+  <br>
   ><p>SHIFTCOPYA 0 SHIFTCOPYZERO X RIGHT</p>
   ><p>SHIFTCOPYA 1 SHIFTCOPYONE X RIGHT</p>
   ><p>SHIFTCOPYA X SHIFTCOPYA b LEFT</p>
   ><p>SHIFTCOPYA Y SHIFTCOPYB Y RIGHT</p>
   ><p>SHIFTCOPYA b SHIFTCOPYB b RIGHT</p>
-  
+  <br>
   ><p>SHIFTCOPYZERO b SHIFTCOPYA 0 LEFT</p>
   ><p>SHIFTCOPYZERO Y SHIFTFINAL Y RIGHT</p>
-  
+  <br>
   ><p>SHIFTCOPYONE b SHIFTCOPYA 1 LEFT</p>
   ><p>SHIFTCOPYONE Y SHIFTFINAL Y RIGHT
-  
+  <br>
   ><p>SHIFTCOPYB b SHIFTFINAL Y RIGHT</p>
 
   The first column is the current state, and the second column is the
   input symbol that is read. The next three columns are the new state,
   the symbol to be written, and the motion of the tape head.
 
-<b>THIS IS DIRECT COPY AND PASTE FROM THE PROJECT PDF.<b> The breaks in the quotes should be empty lines that only serve as a divider.
+<b>THIS IS DIRECT COPY AND PASTE FROM THE PROJECT PDF.</b> The breaks in the quotes should be empty lines that only serve as a divider.
 
 Please note the states are divided into chunks based on the first column. The start state of a TM will always be the state that has the substring START in its name (not case sensitive). So in this case, the start state is SHIFTSTART since it has START in the state's name. 
 
