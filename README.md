@@ -19,6 +19,42 @@ These are a list of files that contain transtion tables for TM actions I attempt
 
 Please note that any transition table file that accepts a binary string as binary number read from left to right (as stated in the project instructions).
 
+## Format of transition table files:
+
+There is no naming convention for the transition table files. They are only named as is so they are easy to identify. There is however a strict syntax the user must follow.
+
+Files are to be formatted akin to this example:
+
+  ><p>SHIFTSTART 0 SHIFTSTART 0 RIGHT</p>
+  ><p>SHIFTSTART 1 SHIFTSTART 1 RIGHT</p>
+  ><p>SHIFTSTART b SHIFTCOPYA b LEFT</p>
+
+  ><p>SHIFTCOPYA 0 SHIFTCOPYZERO X RIGHT</p>
+  ><p>SHIFTCOPYA 1 SHIFTCOPYONE X RIGHT</p>
+  ><p>SHIFTCOPYA X SHIFTCOPYA b LEFT</p>
+  ><p>SHIFTCOPYA Y SHIFTCOPYB Y RIGHT</p>
+  ><p>SHIFTCOPYA b SHIFTCOPYB b RIGHT</p>
+
+  ><p>SHIFTCOPYZERO b SHIFTCOPYA 0 LEFT</p>
+  ><p>SHIFTCOPYZERO Y SHIFTFINAL Y RIGHT</p>
+
+  ><p>SHIFTCOPYONE b SHIFTCOPYA 1 LEFT</p>
+  ><p>SHIFTCOPYONE Y SHIFTFINAL Y RIGHT
+
+  ><p>SHIFTCOPYB b SHIFTFINAL Y RIGHT</p>
+
+  The first column is the current state, and the second column is the
+  input symbol that is read. The next three columns are the new state,
+  the symbol to be written, and the motion of the tape head.
+
+<b>THIS IS DIRECT COPY AND PASTE FROM THE PROJECT PDF.<b>
+
+Please note the states are divided into chunks based on the first column. The start state of a TM will always be the state that has the substring START in its name (not case sensitive). So in this case, the start state is SHIFTSTART since it has START in the state's name. 
+
+Halt states are states that have zero transitions. Look at the last line of the file. SHIFTCOPY on reading b goes to SHIFTFINAL. Okay, but SHIFTFINAL has no transitions, so SHIFTFINAL is created as a halt state, a state with no transitions mapped. How does the TM decide if it reaches a halt state to accept/reject the string? Again this lies in the state name. Halt states with the substring FINAL in its state name will accept the string (not case sensitive). If the halt state does not have FINAL in its name, it rejects. This is very useful for creating trap states to force a rejection. 
+
+The halt states in the TM will be states that have no transitions. So in this case, 
+
 ## How to run:
 
 ```python 
@@ -28,7 +64,7 @@ python3 main.py -b $1 -i $2
 
 -i/--input is the string the user wishes to process. The first character in the input to process must be a blank since the TM will start with its head at the index of 1 in the string. If the program cannot detect a blank your input's first character, it will go ahead and add one itself. Likewise, you do not need to append blanks to the end of the string to ensure it is long enough for the TM to carry out its process. The TM will automatically buffer the string both before and after the string with blank characters if necessary. After all, any TM will make the assumption that the tape is infinite in length. 
 
-# Examples of running the program
+## Examples of running the program
 
 Here are 2 examples of commandlines the user can use. This section is to help clear any doubts in how to run the pyscripts.
 
