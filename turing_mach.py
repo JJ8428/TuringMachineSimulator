@@ -1,6 +1,7 @@
 ''' Obj that the main script will use to Turing Machine '''
 import sys
 from state import State
+from timer import TMtimer
 
 def unique_states(states):
     ''' Accepts a list of states and makes all have unique uniq_id values '''
@@ -108,6 +109,8 @@ class TM:
         if self.tape is None:
             print('Error: Tape is not loaded in TM instance.')
             sys.exit()
+        # Timing module
+        clock = TMtimer()
         # Set text to have parameters shown
         ret = 'SIGMA: '
         for a in range(0, self.sigma.__len__()):
@@ -155,13 +158,16 @@ class TM:
                 self.tape = buffer(self.tape, 'R', self.sigma[0])
             self.current_state = find_state(self.states, trans_info[2])
         ret += 'FINAL/HALT STATE REACHED | INPUT IS ' + str(accepted).upper() + '\n'
-        ret += 'STRING OUTPUT/REMAINING: ' + self.tape
+        ret += 'STRING OUTPUT/REMAINING: ' + self.tape + '\n'
+        # Measure how long it took the TM to process the string 
+        clock.finish()
+        ret += 'TIMER: ' + str(clock.how_long())
         return ret
 
     def load_tape(self, tape):
         ''' Reset the TM obj and load tape '''
         # Allows for TM to be used repeatedly
-        if tape[0] != 'b':
+        if tape[0] != 'b' or tape == 'b':
             self.tape = 'b' + tape
         else:
             self.tape = tape
