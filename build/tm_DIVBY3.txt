@@ -1,0 +1,52 @@
+qSTART b q1 b LEFT
+qSTART 0 qSTART 1 RIGHT
+qSTART 1 qSTART 0 RIGHT
+
+q1 b q2 b RIGHT
+q1 0 q1 0 LEFT
+q1 1 q1 1 LEFT
+
+q2 b q3 1 LEFT
+q2 0 q3 1 LEFT
+q2 1 q2 0 RIGHT
+
+q3 0 q3 0 LEFT
+q3 1 q3 1 LEFT
+q3 b q4 b RIGHT
+
+q4 0 q5 0 RIGHT
+q4 1 q5 1 RIGHT
+
+q5 b q6 1 LEFT
+q5 0 q6 1 LEFT
+q5 1 q5 0 RIGHT
+
+q6 b q7 b RIGHT
+q6 0 q6 0 LEFT
+q6 1 q6 1 LEFT
+
+q7 b qFINAL b LEFT
+q7 0 q8 0 LEFT
+q7 1 q7 1 RIGHT
+
+q8 b q9 b RIGHT
+q8 0 q8 0 LEFT
+q8 1 q8 1 LEFT
+
+q9 0 q12 0 RIGHT
+q9 1 q10 1 RIGHT
+
+q10 1 q13 1 LEFT
+q10 0 q11 0 RIGHT
+
+q11 b qREJECT b LEFT
+q11 1 q11 1 RIGHT
+q11 0 q13 0 LEFT
+
+q12 b qREJECT b LEFT
+q12 1 q12 1 RIGHT
+q12 0 q13 0 LEFT
+
+q13 b q2 b RIGHT
+q13 0 q13 0 LEFT
+q13 1 q13 1 LEFT
