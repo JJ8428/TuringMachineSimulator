@@ -13,7 +13,7 @@ These are a list of files that contain transtion tables for TM actions I attempt
 * <b>tm_COMPLEMENT.txt</b> | TM transition table that takes the user input of a binary string and complement it (0 -> 1 and 1 -> 0)
 * <b>tm_INCREMENT.txt</b> | TM transition table that takes the user input of a binary string as an integer and adds 1 to it.
 * <b>tm_DECREMENT.txt</b> | TM transition table that takes the user input of a binary string as an integer and adds 1 to it.
-* <b>tm_PALINDROME.txt</b> | TM transition table that takes the user input of a binary string and accepts if format of (str w ++ str w reversed) is detected.
+* <b>tm_PALINDROME.txt</b> | TM transition table that takes the user input of a binary string and accepts if format of (str w ++ str w reversed) is detected. Accepts both even and odd length palindromes.
 * <b>tm_ZEROSANDONES.txt</b> | TM transition table that takes the user input of a binary string and accepts if format of (0 occuring 2k times ++ 1 occuring k times, where k is integer >= 0) is detected.
 * <b>tm_DIVBY3.txt</b> | TM transition table that takes the user input of a binary string as an integer and accepts if the integer is divisible by 3.
 
@@ -28,19 +28,19 @@ Files are to be formatted akin to this example:
   ><p>SHIFTSTART 0 SHIFTSTART 0 RIGHT</p>
   ><p>SHIFTSTART 1 SHIFTSTART 1 RIGHT</p>
   ><p>SHIFTSTART b SHIFTCOPYA b LEFT</p>
-
+  >
   ><p>SHIFTCOPYA 0 SHIFTCOPYZERO X RIGHT</p>
   ><p>SHIFTCOPYA 1 SHIFTCOPYONE X RIGHT</p>
   ><p>SHIFTCOPYA X SHIFTCOPYA b LEFT</p>
   ><p>SHIFTCOPYA Y SHIFTCOPYB Y RIGHT</p>
   ><p>SHIFTCOPYA b SHIFTCOPYB b RIGHT</p>
-
+  >
   ><p>SHIFTCOPYZERO b SHIFTCOPYA 0 LEFT</p>
   ><p>SHIFTCOPYZERO Y SHIFTFINAL Y RIGHT</p>
-
+  >
   ><p>SHIFTCOPYONE b SHIFTCOPYA 1 LEFT</p>
   ><p>SHIFTCOPYONE Y SHIFTFINAL Y RIGHT
-
+  >
   ><p>SHIFTCOPYB b SHIFTFINAL Y RIGHT</p>
 
   The first column is the current state, and the second column is the
@@ -72,11 +72,12 @@ Suppose the user has the string 'b0001110111000'. The user wants to figure out i
 ```python
 python3 main.py -b tm_PALINDROME.txt -i b0001110111000
 ```
-This will print every step and state the TM took and whether the input is accepted/rejected at the bottom of the console text.
+Running this will print every state (and transitions of the state) the TM has, each step the TM took, whether the input is accepted/rejected, and how the input(tape) looks after being processed by the TM in the console text. The example above will be accepted since the input is indeed a palindrome.
 
 Suppose the user wants to complement the string '000111000111'. The first thing is to check if there exists a transition table that complements a string of 0's and 1's. Yes, we have one called tm_COMPLEMENT.txt. All that is to do is to enter the command line. Remember, since the input string does not begin with a blank (b) as its first character, the program will warn the user that the text has no blank (b) as its first character and automically will prepend one. 
 ```python 
 python3 main.py -b tm_COMPLEMENT.txt -i 000111000111
 ```
+This example will accept the string regardless (There is nothing to reject unless there are characters other than b 0 or 1) and yield the processed string 111000111000 with blanks either appended for prepended to it.
 
 
